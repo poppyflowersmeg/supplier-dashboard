@@ -1,6 +1,5 @@
 // ── State ──────────────────────────────────────────────────────
-const rawData = JSON.parse(document.getElementById('dashboard-data').textContent);
-let state = JSON.parse(JSON.stringify(rawData));
+let rawData, state;
 
 // ── Toast ──────────────────────────────────────────────────────
 let toastTimer;
@@ -287,20 +286,15 @@ document.getElementById('suppliers-header').addEventListener('click', () => {
 
 // ── Save / Export ──────────────────────────────────────────────
 document.getElementById('btn-save').addEventListener('click', () => {
-  let html = document.documentElement.outerHTML;
   const dataStr = JSON.stringify(state, null, 2);
-  html = html.replace(
-    /<script id="dashboard-data" type="application\/json">[\s\S]*?<\/script>/,
-    `<script id="dashboard-data" type="application/json">\n${dataStr}\n<\/script>`
-  );
-  const blob = new Blob([html], { type: 'text/html' });
+  const blob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `supplier-dashboard-${new Date().toISOString().slice(0,10)}.html`;
+  a.download = 'data.json';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('Dashboard saved ✓');
+  showToast('Data saved ✓');
 });
 
 // ── Utility ────────────────────────────────────────────────────
@@ -386,4 +380,11 @@ function renderAll() {
   renderCards();
   renderCatalog();
 }
-renderAll();
+
+fetch('data.json')
+  .then(r => r.json())
+  .then(data => {
+    rawData = data;
+    state = JSON.parse(JSON.stringify(rawData));
+    renderAll();
+  });
