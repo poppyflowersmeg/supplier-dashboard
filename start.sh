@@ -10,6 +10,7 @@ if [ -f "$PID_FILE" ]; then
   echo "Server already running (PID $OLD_PID). Restarting..."
   kill "$OLD_PID" 2>/dev/null || true
   rm -f "$PID_FILE"
+  sleep 1
 fi
 
 echo "Starting Supplier Dashboard on http://localhost:$PORT"
