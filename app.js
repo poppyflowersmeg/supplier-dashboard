@@ -324,7 +324,7 @@ function syncFromSheet() {
 
   const cbName = '_sheetSync_' + Date.now();
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
-              `?tqx=out:json&callback=${cbName}&gid=${SHEET_GID}`;
+              `?tqx=out:json;responseHandler:${cbName}&gid=${SHEET_GID}`;
 
   const cleanup = (script) => {
     delete window[cbName];
