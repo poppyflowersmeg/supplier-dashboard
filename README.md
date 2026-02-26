@@ -19,7 +19,7 @@ Because the app loads `data.json` via `fetch`, it needs to be served from a loca
 ```bash
 ./start.sh
 ```
-This starts a server on http://localhost:8000 and opens it in your browser automatically.
+This starts a server on http://localhost:8000 and opens it in your browser automatically. If the server is already running, it will restart it.
 
 **Stop the dev server:**
 ```bash

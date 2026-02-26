@@ -18,7 +18,7 @@ The app uses `fetch('data.json')` so it must be served from a local server — o
 ```bash
 ./start.sh
 ```
-Opens http://localhost:8000 in your browser automatically.
+Opens http://localhost:8000 in your browser automatically. If the server is already running, it will restart it.
 
 **Stop the dev server:**
 ```bash
