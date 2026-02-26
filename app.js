@@ -43,9 +43,9 @@ function renderCards() {
       ${s.email ? `<div class="card-info-row" style="font-size:.78rem"><span class="info-icon">✉️</span><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></div>` : ''}
       ${s.phone ? `<div class="card-info-row" style="font-size:.78rem"><span class="info-icon">📞</span><span>${esc(s.phone)}</span></div>` : ''}
       ${s.notes ? `<div class="card-note">${esc(s.notes)}</div>` : ''}
-      ${/* <div class="card-actions">
-        <button class="btn btn-ghost btn-sm" data-edit-supplier="${s.id}" style="flex:1" disabled>✏️ Edit</button>
-      </div> */ ''}
+      <div class="card-actions">
+        <button class="btn btn-ghost btn-sm" data-edit-supplier="${s.id}" style="flex:1;cursor:not-allowed" disabled>✏️ Edit</button>
+      </div>
     `;
 
     scroll.insertBefore(card, addBtn);
@@ -125,11 +125,11 @@ function renderCatalog() {
       <td style="text-align:center">${item.stems ? item.stems : '—'}</td>
       <td class="price-cell">${item.price !== undefined && item.price !== 0 && item.price !== '' ? (typeof item.price === 'string' ? item.price : '$'+Number(item.price).toFixed(2)) : '—'}</td>
       <td class="note-cell">${esc(item.notes||'')}</td>
-      ${/* <td><div class="actions-cell">
-        <button class="btn-icon" data-edit-item="${item.id}" title="Edit" disabled>
+      <td><div class="actions-cell">
+        <button class="btn-icon" data-edit-item="${item.id}" title="Edit" disabled style="cursor:not-allowed">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-      </div></td> */ ''}
+      </div></td>
     `;
     tbody.appendChild(row);
   });
