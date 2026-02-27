@@ -1,4 +1,5 @@
 import type { Supplier } from '../../lib/types'
+import { useSupplierCatalogs, getPdfSignedUrl } from '../../hooks/useSupplierCatalogs'
 
 interface Props {
   supplier: Supplier
@@ -6,6 +7,7 @@ interface Props {
 }
 
 export function SupplierCard({ supplier: s, onEdit }: Props) {
+  const { data: catalogEntries = [] } = useSupplierCatalogs(s.id)
   const specialtyChips = (s.specialties || '')
     .split(',')
     .map((x) => x.trim())
@@ -61,6 +63,31 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
         </div>
       )}
       {s.notes && <div className="card-note">{s.notes}</div>}
+      {catalogEntries.length > 0 && (
+        <div className="card-catalog">
+          <div className="card-catalog-title">Catalog</div>
+          {catalogEntries.map((entry) => (
+            <div key={entry.id} className="card-catalog-entry">
+              <span>{entry.type === 'pdf' ? '📄' : '🔗'}</span>
+              {entry.type === 'pdf' ? (
+                <button
+                  className="btn-link"
+                  onClick={async () => {
+                    const url = await getPdfSignedUrl(entry.url)
+                    if (url) window.open(url, '_blank')
+                  }}
+                >
+                  {entry.label || 'PDF'}
+                </button>
+              ) : (
+                <a href={entry.url} target="_blank" rel="noreferrer">
+                  {entry.label || entry.url}
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       <div className="card-actions">
         <button
           className="btn btn-ghost btn-sm"

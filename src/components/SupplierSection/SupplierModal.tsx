@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useCreateSupplier, useUpdateSupplier, useDeleteSupplier } from '../../hooks/useSuppliers'
 import { useToast } from '../Toast'
 import type { Supplier } from '../../lib/types'
+import { SupplierCatalogSection } from './SupplierCatalogSection'
 
 interface Props {
   supplier: Supplier | null // null = add mode
@@ -172,7 +173,7 @@ export function SupplierModal({ supplier, onClose }: Props) {
             />
           </div>
           <div className="form-row-2">
-            <div className="form-row" style={{ marginBottom: 0 }}>
+            <div className="form-row">
               <label>Contact Email</label>
               <input
                 type="email"
@@ -199,6 +200,9 @@ export function SupplierModal({ supplier, onClose }: Props) {
               placeholder="Anything the team should know…"
             />
           </div>
+          {supplier && (
+            <SupplierCatalogSection supplierId={supplier.id} />
+          )}
           {supplier && (
             <div className="delete-zone">
               <p>Permanently remove this supplier and all their catalog items.</p>
