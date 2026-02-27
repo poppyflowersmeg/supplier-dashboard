@@ -71,10 +71,14 @@ function setAuthButtons(enabled) {
   });
 }
 
+let appLoading = false;
+
 async function handleAuthChange(event, session) {
   const user = session?.user;
 
   if (!user) {
+    state = null;
+    appLoading = false;
     showLoginScreen();
     setAuthButtons(false);
     return;
@@ -92,31 +96,28 @@ async function handleAuthChange(event, session) {
   setAuthButtons(true);
   document.getElementById('nav-user-email').textContent = user.email;
 
-  // Only load data once
-  if (!state) await initApp();
+  // Load data once (guard against double-fire from onAuthStateChange + getSession)
+  if (!state && !appLoading) {
+    appLoading = true;
+    await initApp();
+    appLoading = false;
+  }
 }
 
 document.getElementById('btn-google-login').addEventListener('click', async () => {
-  const redirectTo = window.location.origin + window.location.pathname;
   const { error } = await db.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo },
+    options: { redirectTo: window.location.origin + window.location.pathname },
   });
   if (error) showToast('Sign-in failed: ' + error.message);
 });
 
 document.getElementById('btn-signout').addEventListener('click', async () => {
   await db.auth.signOut();
-  // onAuthStateChange will fire and show the login screen
 });
 
-// Listen for auth state changes (covers OAuth redirects, sign-out, etc.)
+// Listen for all auth events (INITIAL_SESSION covers page refresh)
 db.auth.onAuthStateChange(handleAuthChange);
-
-// Check session on initial load
-db.auth.getSession().then(({ data: { session } }) => {
-  handleAuthChange(null, session);
-});
 
 // ── Ordering Flow Banner ───────────────────────────────────────
 // ── Supplier Cards ─────────────────────────────────────────────
@@ -417,7 +418,7 @@ function esc(str) {
 // ── Sync from Google Sheet ──────────────────────────────────────
 const SHEET_ID  = '1kgAWJhepfPxy-A5rmPwaMb5XAEL2CEf8';
 const SHEET_GID = '1252533107';
-const AGROGANA_ID = 1;
+const AGROGANA_ID = 2;
 
 function normVariety(s) {
   return (s || '').toUpperCase().trim()
