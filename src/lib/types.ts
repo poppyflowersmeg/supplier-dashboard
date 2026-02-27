@@ -24,6 +24,14 @@ export interface CatalogItem {
   poppyNotes: string
 }
 
+export interface SupplierCatalogEntry {
+  id: number
+  supplierId: number
+  label: string
+  url: string // external URL for links, storage path for pdfs
+  type: 'link' | 'pdf'
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function dbToSupplier(r: any): Supplier {
   return {
