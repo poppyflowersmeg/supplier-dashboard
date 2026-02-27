@@ -2,40 +2,45 @@
 
 Internal supplier catalog tool for managing farm partners, wholesalers, and the flower catalog.
 
-## Files
+## Stack
 
-| File | Purpose |
-|------|---------|
-| `index.html` | Page structure and markup |
-| `styles.css` | All styles |
-| `app.js` | All JavaScript / app logic |
-| `data.json` | Supplier and catalog data |
+React 18 + TypeScript, Vite, TanStack Query v5, Supabase (auth + database + storage).
 
 ## Local Development
 
-Because the app loads `data.json` via `fetch`, it needs to be served from a local web server (not opened directly as a file).
-
 **Start the dev server:**
 ```bash
-./start.sh
+npm run dev
 ```
-This starts a server on http://localhost:8000 and opens it in your browser automatically. If the server is already running, it will restart it.
+Opens http://localhost:8000/supplier-dashboard/ with hot module replacement.
 
-**Stop the dev server:**
+**Build for production:**
 ```bash
-./stop.sh
+npm run build
 ```
 
-> The scripts require Python 3, which comes pre-installed on macOS.
+**Preview the production build locally:**
+```bash
+npm run preview
+```
+
+## Environment
+
+Create a `.env.local` file in the project root with your Supabase credentials:
+
+```
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
 
 ## Deploying
 
-The site is hosted on GitHub Pages and redeploys automatically on every push to `main`.
+Push to `main` — GitHub Actions builds and deploys to GitHub Pages automatically.
 
-```bash
-git add -A
-git commit -m "your message"
-git push
-```
+Before the first deploy, add these secrets in repo Settings → Secrets → Actions:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+Also enable GitHub Pages with source "GitHub Actions" in repo Settings → Pages.
 
 Live URL: https://poppyflowersmeg.github.io/supplier-dashboard/
