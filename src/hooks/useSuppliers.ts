@@ -17,7 +17,7 @@ export function useSuppliers() {
 export function useCreateSupplier() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (supplier: Omit<Supplier, 'id' | 'priority'>) => {
+    mutationFn: async (supplier: Omit<Supplier, 'id' | 'priority' | 'createdAt'>) => {
       const { data, error } = await db.from('suppliers').insert(supplierToDB(supplier)).select().single()
       if (error) throw error
       return dbToSupplier(data)
@@ -31,7 +31,7 @@ export function useCreateSupplier() {
 export function useUpdateSupplier() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, priority: _priority, ...supplier }: Supplier) => {
+    mutationFn: async ({ id, priority: _priority, createdAt: _createdAt, ...supplier }: Supplier) => {
       const { error } = await db.from('suppliers').update(supplierToDB(supplier)).eq('id', id)
       if (error) throw error
     },

@@ -50,7 +50,7 @@ export function dbToSupplier(r: any): Supplier {
   }
 }
 
-export function supplierToDB(s: Omit<Supplier, 'id' | 'priority'>) {
+export function supplierToDB(s: Omit<Supplier, 'id' | 'priority' | 'createdAt'>) {
   return {
     name: s.name,
     supplierType: s.supplierType,

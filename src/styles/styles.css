@@ -341,8 +341,8 @@
       white-space: nowrap;
     }
     .catalog-table tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
-    .catalog-table tbody tr:hover td { background: #faf9f5; }
-    .catalog-table tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 var(--poppy); }
+    .catalog-table tbody tr:not(:has(.group-label)):hover td { background: #faf9f5; }
+    .catalog-table tbody tr:not(:has(.group-label)):hover td:first-child { box-shadow: inset 3px 0 0 var(--poppy); }
     .catalog-table tbody td { padding: 10px 14px; font-size: .87rem; vertical-align: middle; }
     .catalog-table td.note-cell { color: var(--muted); font-style: italic; font-size: .81rem; white-space: pre-wrap; }
     .row-unavailable td { color: #c0bdb6 !important; background: #f9f8f5; }

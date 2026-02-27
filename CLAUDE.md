@@ -22,7 +22,7 @@ React 18 + TypeScript, built with Vite, TanStack Query v5 for data fetching, Sup
 ```bash
 npm run dev
 ```
-Opens http://localhost:5173/supplier-dashboard/ (Vite with HMR).
+Opens http://localhost:8000/supplier-dashboard/ (Vite with HMR).
 
 **Build:**
 ```bash
