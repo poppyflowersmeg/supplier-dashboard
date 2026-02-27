@@ -116,8 +116,17 @@ document.getElementById('btn-signout').addEventListener('click', async () => {
   await db.auth.signOut();
 });
 
-// Listen for all auth events (INITIAL_SESSION covers page refresh)
-db.auth.onAuthStateChange(handleAuthChange);
+// Handle ongoing auth changes (sign-in, sign-out, token refresh)
+// Skip INITIAL_SESSION — we handle that explicitly via getSession() below
+db.auth.onAuthStateChange((event, session) => {
+  if (event !== 'INITIAL_SESSION') handleAuthChange(event, session);
+});
+
+// Initial session check — getSession() waits for token refresh if needed
+(async () => {
+  const { data: { session } } = await db.auth.getSession();
+  await handleAuthChange('initial', session);
+})();
 
 // ── Ordering Flow Banner ───────────────────────────────────────
 // ── Supplier Cards ─────────────────────────────────────────────
