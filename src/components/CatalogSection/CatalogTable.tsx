@@ -12,10 +12,13 @@ function formatPrice(price: string) {
 
 function getFreight(s: Supplier, size: FreightBoxSize): number | null {
   switch (size) {
-    case 'box': return s.freightPerStemBoxAvg
-    case 'hb':  return s.freightPerStemHBAvg
-    case 'qb':  return s.freightPerStemQBAvg
-    case 'eb':  return s.freightPerStemEBAvg
+    case 'hb':            return s.freightPerStemHBAvg
+    case 'qb':            return s.freightPerStemQBAvg
+    case 'eb':            return s.freightPerStemEBAvg
+    case 'roses-hb':      return s.freightRosesHBAvg
+    case 'roses-qb':      return s.freightRosesQBAvg
+    case 'hydrangea-qb':  return s.freightHydrangeaQBAvg
+    case 'hydrangea-eb':  return s.freightHydrangeaEBAvg
   }
 }
 

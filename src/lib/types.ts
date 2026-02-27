@@ -11,10 +11,13 @@ export interface Supplier {
   notes: string
   priority: number
   createdAt: string
-  freightPerStemBoxAvg: number | null
   freightPerStemHBAvg: number | null
   freightPerStemQBAvg: number | null
   freightPerStemEBAvg: number | null
+  freightRosesHBAvg: number | null
+  freightRosesQBAvg: number | null
+  freightHydrangeaQBAvg: number | null
+  freightHydrangeaEBAvg: number | null
 }
 
 export interface CatalogItem {
@@ -58,10 +61,13 @@ export function dbToSupplier(r: any): Supplier {
     notes: r.notes || '',
     priority: r.id,
     createdAt: r.createdAt,
-    freightPerStemBoxAvg: r.freightPerStemBoxAvg ?? null,
     freightPerStemHBAvg: r.freightPerStemHBAvg ?? null,
     freightPerStemQBAvg: r.freightPerStemQBAvg ?? null,
     freightPerStemEBAvg: r.freightPerStemEBAvg ?? null,
+    freightRosesHBAvg: r.freightRosesHBAvg ?? null,
+    freightRosesQBAvg: r.freightRosesQBAvg ?? null,
+    freightHydrangeaQBAvg: r.freightHydrangeaQBAvg ?? null,
+    freightHydrangeaEBAvg: r.freightHydrangeaEBAvg ?? null,
   }
 }
 
@@ -76,10 +82,13 @@ export function supplierToDB(s: Omit<Supplier, 'id' | 'priority' | 'createdAt'>)
     specialties: (s.specialties || '').split(',').map((x) => x.trim()).filter(Boolean),
     limitations: s.limitations || '',
     notes: s.notes || '',
-    freightPerStemBoxAvg: s.freightPerStemBoxAvg ?? null,
     freightPerStemHBAvg: s.freightPerStemHBAvg ?? null,
     freightPerStemQBAvg: s.freightPerStemQBAvg ?? null,
     freightPerStemEBAvg: s.freightPerStemEBAvg ?? null,
+    freightRosesHBAvg: s.freightRosesHBAvg ?? null,
+    freightRosesQBAvg: s.freightRosesQBAvg ?? null,
+    freightHydrangeaQBAvg: s.freightHydrangeaQBAvg ?? null,
+    freightHydrangeaEBAvg: s.freightHydrangeaEBAvg ?? null,
   }
 }
 

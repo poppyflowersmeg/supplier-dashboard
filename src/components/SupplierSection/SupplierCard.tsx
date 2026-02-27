@@ -37,15 +37,34 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
           <span>{s.leadTime}</span>
         </div>
       )}
-      {(s.freightPerStemBoxAvg != null || s.freightPerStemHBAvg != null || s.freightPerStemQBAvg != null || s.freightPerStemEBAvg != null) && (
+      {(s.freightPerStemHBAvg != null || s.freightPerStemQBAvg != null || s.freightPerStemEBAvg != null) && (
         <div className="card-info-row" style={{ fontSize: '.79rem', alignItems: 'flex-start' }}>
           <span className="info-icon">🚚</span>
           <span>
             <strong>Avg Freight/stem:</strong>
-            {s.freightPerStemBoxAvg != null && <> ${s.freightPerStemBoxAvg.toFixed(2)} Box</>}
-            {s.freightPerStemHBAvg != null && <>{s.freightPerStemBoxAvg != null ? ' · ' : ' '}${s.freightPerStemHBAvg.toFixed(2)} HB</>}
-            {s.freightPerStemQBAvg != null && <>{(s.freightPerStemBoxAvg != null || s.freightPerStemHBAvg != null) ? ' · ' : ' '}${s.freightPerStemQBAvg.toFixed(2)} QB</>}
-            {s.freightPerStemEBAvg != null && <>{(s.freightPerStemBoxAvg != null || s.freightPerStemHBAvg != null || s.freightPerStemQBAvg != null) ? ' · ' : ' '}${s.freightPerStemEBAvg.toFixed(2)} EB</>}
+            {s.freightPerStemHBAvg != null && <> ${s.freightPerStemHBAvg.toFixed(2)} HB</>}
+            {s.freightPerStemQBAvg != null && <>{s.freightPerStemHBAvg != null ? ' · ' : ' '}${s.freightPerStemQBAvg.toFixed(2)} QB</>}
+            {s.freightPerStemEBAvg != null && <>{(s.freightPerStemHBAvg != null || s.freightPerStemQBAvg != null) ? ' · ' : ' '}${s.freightPerStemEBAvg.toFixed(2)} EB</>}
+          </span>
+        </div>
+      )}
+      {(s.freightRosesHBAvg != null || s.freightRosesQBAvg != null) && (
+        <div className="card-info-row" style={{ fontSize: '.79rem', alignItems: 'flex-start' }}>
+          <span className="info-icon">🌹</span>
+          <span>
+            <strong>Roses:</strong>
+            {s.freightRosesHBAvg != null && <> ${s.freightRosesHBAvg.toFixed(2)} HB</>}
+            {s.freightRosesQBAvg != null && <>{s.freightRosesHBAvg != null ? ' · ' : ' '}${s.freightRosesQBAvg.toFixed(2)} QB</>}
+          </span>
+        </div>
+      )}
+      {(s.freightHydrangeaQBAvg != null || s.freightHydrangeaEBAvg != null) && (
+        <div className="card-info-row" style={{ fontSize: '.79rem', alignItems: 'flex-start' }}>
+          <span className="info-icon">💐</span>
+          <span>
+            <strong>Hydrangea:</strong>
+            {s.freightHydrangeaQBAvg != null && <> ${s.freightHydrangeaQBAvg.toFixed(2)} QB</>}
+            {s.freightHydrangeaEBAvg != null && <>{s.freightHydrangeaQBAvg != null ? ' · ' : ' '}${s.freightHydrangeaEBAvg.toFixed(2)} EB</>}
           </span>
         </div>
       )}

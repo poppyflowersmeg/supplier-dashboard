@@ -5,14 +5,14 @@ import { CatalogTable } from './CatalogTable'
 import { CatalogModal } from './CatalogModal'
 import type { CatalogItem } from '../../lib/types'
 
-export type FreightBoxSize = 'box' | 'hb' | 'qb' | 'eb'
+export type FreightBoxSize = 'hb' | 'qb' | 'eb' | 'roses-hb' | 'roses-qb' | 'hydrangea-qb' | 'hydrangea-eb'
 
 export function CatalogSection() {
   const { data: suppliers = [] } = useSuppliers()
   const { data: catalog = [] } = useCatalog()
   const [search, setSearch] = useState('')
   const [filterSupplierId, setFilterSupplierId] = useState('all')
-  const [freightBoxSize, setFreightBoxSize] = useState<FreightBoxSize>('box')
+  const [freightBoxSize, setFreightBoxSize] = useState<FreightBoxSize>('hb')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null)
 
@@ -115,10 +115,13 @@ export function CatalogSection() {
                       value={freightBoxSize}
                       onChange={(e) => setFreightBoxSize(e.target.value as FreightBoxSize)}
                     >
-                      <option value="box">Box</option>
-                      <option value="hb">Half Box</option>
-                      <option value="qb">Qtr Box</option>
-                      <option value="eb">8th Box</option>
+                      <option value="hb">HB</option>
+                      <option value="qb">QB</option>
+                      <option value="eb">EB</option>
+                      <option value="roses-hb">Roses HB</option>
+                      <option value="roses-qb">Roses QB</option>
+                      <option value="hydrangea-qb">Hydrangea QB</option>
+                      <option value="hydrangea-eb">Hydrangea EB</option>
                     </select>
                   </div>
                 </th>
