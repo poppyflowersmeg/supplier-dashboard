@@ -35,8 +35,33 @@ function supplierToDB(s) {
   };
 }
 
+// Catalog: DB row → app object
+function dbToCatalogItem(r) {
+  return {
+    id:         r.id,
+    supplierId: r.supplier_id,
+    variety:    r.variety,
+    color:      r.color || '',
+    stems:      r.stems || '',
+    price:      r.price || '',
+    notes:      r.notes || '',
+  };
+}
+
+// Catalog: app object → DB row
+function catalogItemToDB(item) {
+  return {
+    supplier_id: item.supplierId,
+    variety:     item.variety,
+    color:       item.color || '',
+    stems:       String(item.stems || ''),
+    price:       String(item.price || ''),
+    notes:       item.notes || '',
+  };
+}
+
 // ── State ──────────────────────────────────────────────────────
-let rawData, state;
+let state;
 
 // ── Toast ──────────────────────────────────────────────────────
 let toastTimer;
@@ -62,7 +87,7 @@ function hideLoginScreen() {
 
 function setAuthButtons(enabled) {
   const on = enabled ? '' : 'not-allowed';
-  const els = ['btn-add-supplier'];
+  const els = ['btn-add-supplier', 'btn-add-item'];
   els.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -84,10 +109,10 @@ async function handleAuthChange(event, session) {
     return;
   }
 
-  // Enforce @poppyflowers.com domain
-  if (!user.email?.toLowerCase().endsWith('@poppyflowers.com')) {
+  // Enforce meg@poppyflowers.com only
+  if (user.email?.toLowerCase() !== 'meg@poppyflowers.com') {
     await db.auth.signOut();
-    showLoginScreen('Access is restricted to @poppyflowers.com accounts.');
+    showLoginScreen('Access is restricted to meg@poppyflowers.com.');
     return;
   }
 
@@ -240,10 +265,10 @@ function renderCatalog() {
       <td style="font-weight:600">${esc(item.variety)}</td>
       <td>${esc(item.color||'—')}</td>
       <td style="text-align:center">${item.stems ? item.stems : '—'}</td>
-      <td class="price-cell">${item.price !== undefined && item.price !== 0 && item.price !== '' ? (typeof item.price === 'string' ? item.price : '$'+Number(item.price).toFixed(2)) : '—'}</td>
+      <td class="price-cell">${item.price ? (/^[\d.]+$/.test(item.price) ? '$' + Number(item.price).toFixed(2) : item.price) : '—'}</td>
       <td class="note-cell">${esc(item.notes||'')}</td>
       <td><div class="actions-cell">
-        <button class="btn-icon" data-edit-item="${item.id}" title="Edit" disabled>
+        <button class="btn-icon" data-edit-item="${item.id}" title="Edit">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
       </div></td>
@@ -251,9 +276,9 @@ function renderCatalog() {
     tbody.appendChild(row);
   });
 
-  // tbody.querySelectorAll('[data-edit-item]').forEach(btn => {
-  //   btn.addEventListener('click', () => openItemModal(parseInt(btn.dataset.editItem)));
-  // });
+  tbody.querySelectorAll('[data-edit-item]').forEach(btn => {
+    btn.addEventListener('click', () => openItemModal(parseInt(btn.dataset.editItem)));
+  });
 }
 
 // ── Supplier Modal ─────────────────────────────────────────────
@@ -318,7 +343,9 @@ document.getElementById('btn-delete-supplier').addEventListener('click', async (
   const { error, count } = await db.from('partners').delete({ count: 'exact' }).eq('id', id);
   if (error || count === 0) { showToast("You don't have permission to delete partners"); return; }
   state.suppliers = state.suppliers.filter(s => s.id !== id);
-  state.catalog   = state.catalog.filter(i => i.supplierId !== id);
+  // Cascade deletes catalog items in DB; reload to stay in sync
+  const { data: catalog } = await db.from('catalog').select('*').order('id');
+  if (catalog) state.catalog = catalog.map(dbToCatalogItem);
   closeModal('modal-supplier');
   renderAll();
   showToast('Supplier deleted');
@@ -344,7 +371,7 @@ function openItemModal(id) {
   showModal('modal-item');
 }
 
-document.getElementById('btn-save-item').addEventListener('click', () => {
+document.getElementById('btn-save-item').addEventListener('click', async () => {
   const variety = document.getElementById('i-variety').value.trim();
   if (!variety) { alert('Please enter a variety name.'); return; }
   const id = document.getElementById('i-id').value;
@@ -352,25 +379,30 @@ document.getElementById('btn-save-item').addEventListener('click', () => {
     supplierId: parseInt(document.getElementById('i-supplier').value),
     variety,
     color: document.getElementById('i-color').value.trim(),
-    stems: parseInt(document.getElementById('i-stems').value) || 0,
-    price: (() => { const v = document.getElementById('i-price').value.trim(); const n = parseFloat(v); return (isNaN(n) || /[^0-9.]/.test(v)) ? v : n; })(),
+    stems: document.getElementById('i-stems').value.trim(),
+    price: document.getElementById('i-price').value.trim(),
     notes: document.getElementById('i-notes').value.trim(),
   };
   if (id) {
-    const item = state.catalog.find(x => x.id == id);
-    Object.assign(item, data);
+    const { error } = await db.from('catalog').update(catalogItemToDB(data)).eq('id', id);
+    if (error) { showToast('Error saving item'); console.error(error); return; }
+    Object.assign(state.catalog.find(x => x.id == id), data);
     showToast('Item updated ✓');
   } else {
-    state.catalog.push({ id: state.nextId++, ...data });
+    const { data: row, error } = await db.from('catalog').insert(catalogItemToDB(data)).select().single();
+    if (error) { showToast('Error adding item'); console.error(error); return; }
+    state.catalog.push(dbToCatalogItem(row));
     showToast('Item added ✓');
   }
   closeModal('modal-item');
   renderCatalog();
 });
 
-document.getElementById('btn-delete-item').addEventListener('click', () => {
+document.getElementById('btn-delete-item').addEventListener('click', async () => {
   const id = parseInt(document.getElementById('i-id').value);
   if (!confirm('Remove this item from the catalog?')) return;
+  const { error } = await db.from('catalog').delete().eq('id', id);
+  if (error) { showToast('Error deleting item'); console.error(error); return; }
   state.catalog = state.catalog.filter(i => i.id !== id);
   closeModal('modal-item');
   renderCatalog();
@@ -454,7 +486,7 @@ function syncFromSheet() {
     icon.classList.remove('syncing');
   };
 
-  window[cbName] = function(resp) {
+  window[cbName] = async function(resp) {
     try {
       if (!resp || !resp.table) throw new Error('Empty response');
       const rows = resp.table.rows || [];
@@ -468,14 +500,22 @@ function syncFromSheet() {
       });
 
       let updated = 0;
+      const toUpdate = [];
       state.catalog.forEach(item => {
         if (item.supplierId !== AGROGANA_ID) return;
         const key = normVariety(item.variety);
         if (key in lookup) {
           const incoming = lookup[key];
-          if (item.notes !== incoming) { item.notes = incoming; updated++; }
+          if (item.notes !== incoming) { item.notes = incoming; toUpdate.push(item); updated++; }
         }
       });
+
+      // Persist changed notes to Supabase
+      if (toUpdate.length) {
+        await Promise.all(toUpdate.map(item =>
+          db.from('catalog').update({ notes: item.notes }).eq('id', item.id)
+        ));
+      }
 
       renderCatalog();
       showToast(updated
@@ -503,15 +543,14 @@ function renderAll() {
 }
 
 async function initApp() {
-  const [{ data: partners, error }, catalogRes] = await Promise.all([
+  const [{ data: partners, error: pErr }, { data: catalog, error: cErr }] = await Promise.all([
     db.from('partners').select('*').order('id'),
-    fetch('data.json').then(r => r.json()),
+    db.from('catalog').select('*').order('id'),
   ]);
-  if (error) { showToast('Failed to load partners'); console.error(error); return; }
+  if (pErr || cErr) { showToast('Failed to load data'); console.error(pErr || cErr); return; }
   state = {
     suppliers: partners.map(dbToSupplier),
-    catalog:   catalogRes.catalog,
-    nextId:    catalogRes.nextId,
+    catalog:   catalog.map(dbToCatalogItem),
   };
   renderAll();
 }
