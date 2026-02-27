@@ -675,3 +675,63 @@
       color: rgba(255,255,255,.7);
     }
     .nav-user .btn-ghost:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    /* ── Users Modal ──────────────────────────────────────── */
+    .user-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .user-row:last-child { border-bottom: none; }
+    .user-email {
+      font-size: .87rem;
+      font-weight: 500;
+      color: var(--text);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .toggle-text {
+      font-size: .76rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 38px;
+      height: 22px;
+      border-radius: 11px;
+      border: none;
+      background: var(--border);
+      cursor: pointer;
+      padding: 0;
+      transition: background .2s;
+    }
+    .toggle-switch.toggle-on { background: var(--poppy); }
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.15);
+      transition: transform .2s;
+    }
+    .toggle-switch.toggle-on .toggle-knob { transform: translateX(16px); }
+    .toggle-switch:disabled { opacity: .5; cursor: not-allowed; }
+

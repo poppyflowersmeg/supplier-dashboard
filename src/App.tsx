@@ -1,4 +1,5 @@
 import { useAuth } from './hooks/useAuth'
+import { useCurrentUserProfile } from './hooks/useUserProfiles'
 import { LoginScreen } from './components/LoginScreen'
 import { NavBar } from './components/NavBar'
 import { SupplierSection } from './components/SupplierSection/SupplierSection'
@@ -6,6 +7,7 @@ import { CatalogSection } from './components/CatalogSection/CatalogSection'
 
 export function App() {
   const { session, loading, signIn, signOut } = useAuth()
+  const { data: profile } = useCurrentUserProfile(session?.user.id)
 
   if (loading) return null
 
@@ -15,7 +17,11 @@ export function App() {
 
   return (
     <>
-      <NavBar userEmail={session.user.email ?? ''} onSignOut={signOut} />
+      <NavBar
+        userEmail={session.user.email ?? ''}
+        onSignOut={signOut}
+        canManageUsers={profile?.canManageUsers ?? false}
+      />
       <div className="page">
         <SupplierSection />
         <CatalogSection />
@@ -23,3 +29,4 @@ export function App() {
     </>
   )
 }
+

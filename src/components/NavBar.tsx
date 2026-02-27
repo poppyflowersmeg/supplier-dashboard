@@ -4,6 +4,7 @@ import { db } from '../lib/supabase'
 import { useSuppliers } from '../hooks/useSuppliers'
 import { useCatalog } from '../hooks/useCatalog'
 import { useToast } from './Toast'
+import { UsersModal } from './UsersModal'
 import type { CatalogItem } from '../lib/types'
 
 const SHEET_ID = '1kgAWJhepfPxy-A5rmPwaMb5XAEL2CEf8'
@@ -19,10 +20,12 @@ function normVariety(s: string) {
 interface Props {
   userEmail: string
   onSignOut: () => void
+  canManageUsers: boolean
 }
 
-export function NavBar({ userEmail, onSignOut }: Props) {
+export function NavBar({ userEmail, onSignOut, canManageUsers }: Props) {
   const [syncing, setSyncing] = useState(false)
+  const [showUsers, setShowUsers] = useState(false)
   const { showToast } = useToast()
   const { data: suppliers = [] } = useSuppliers()
   const { data: catalog = [] } = useCatalog()
@@ -125,6 +128,17 @@ export function NavBar({ userEmail, onSignOut }: Props) {
           <span className="nav-user-email">{userEmail}</span>
           <button className="btn btn-ghost btn-sm" onClick={onSignOut}>Sign out</button>
         </div>
+        {canManageUsers && (
+          <button className="btn btn-sync btn-sm" onClick={() => setShowUsers(true)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Users
+          </button>
+        )}
         <button
           className="btn btn-sync btn-sm"
           onClick={syncFromSheet}
@@ -158,6 +172,7 @@ export function NavBar({ userEmail, onSignOut }: Props) {
           Save Dashboard
         </button>
       </div>
+      {showUsers && <UsersModal onClose={() => setShowUsers(false)} />}
     </nav>
   )
 }

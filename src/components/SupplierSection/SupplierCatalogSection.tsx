@@ -19,7 +19,7 @@ export function SupplierCatalogSection({ supplierId }: Props) {
   const addPdf = useAddCatalogPdf()
   const deleteEntry = useDeleteCatalogEntry()
 
-  const [isMeg, setIsMeg] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [addMode, setAddMode] = useState<'none' | 'link' | 'pdf'>('none')
   const [linkLabel, setLinkLabel] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
@@ -28,7 +28,14 @@ export function SupplierCatalogSection({ supplierId }: Props) {
 
   useEffect(() => {
     db.auth.getUser().then(({ data }) => {
-      setIsMeg(data.user?.email === 'meg@poppyflowers.com')
+      if (!data.user) return
+      db.from('userProfiles')
+        .select('isAdmin')
+        .eq('id', data.user.id)
+        .single()
+        .then(({ data: profile }) => {
+          setIsAdmin(profile?.isAdmin ?? false)
+        })
     })
   }, [])
 
@@ -104,7 +111,7 @@ export function SupplierCatalogSection({ supplierId }: Props) {
                   </a>
                 )}
               </span>
-              {isMeg && (
+              {isAdmin && (
                 <button
                   className="btn-ghost catalog-delete-btn"
                   onClick={() => handleDelete(entry)}
@@ -119,7 +126,7 @@ export function SupplierCatalogSection({ supplierId }: Props) {
         </div>
       )}
 
-      {isMeg && (
+      {isAdmin && (
         <div className="catalog-add-controls">
           {addMode === 'none' && (
             <div className="catalog-add-buttons">

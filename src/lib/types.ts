@@ -33,6 +33,13 @@ export interface SupplierCatalogEntry {
   type: 'link' | 'pdf'
 }
 
+export interface UserProfile {
+  id: string
+  email: string
+  isAdmin: boolean
+  canManageUsers: boolean
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function dbToSupplier(r: any): Supplier {
   return {
