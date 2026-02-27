@@ -37,10 +37,10 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
           <span>{s.leadTime}</span>
         </div>
       )}
-      {s.freightPerStemAvg != null && (
+      {s.freightPerStemBoxAvg != null && (
         <div className="card-info-row" style={{ fontSize: '.79rem' }}>
           <span className="info-icon">🚚</span>
-          <span><strong>Avg Freight:</strong> ${s.freightPerStemAvg.toFixed(2)}/stem</span>
+          <span><strong>Avg Freight:</strong> ${s.freightPerStemBoxAvg.toFixed(2)}/stem (Box)</span>
         </div>
       )}
       {specialtyChips.length > 0 && (

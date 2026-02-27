@@ -5,11 +5,14 @@ import { CatalogTable } from './CatalogTable'
 import { CatalogModal } from './CatalogModal'
 import type { CatalogItem } from '../../lib/types'
 
+export type FreightBoxSize = 'box' | 'hb' | 'qb' | 'eb'
+
 export function CatalogSection() {
   const { data: suppliers = [] } = useSuppliers()
   const { data: catalog = [] } = useCatalog()
   const [search, setSearch] = useState('')
   const [filterSupplierId, setFilterSupplierId] = useState('all')
+  const [freightBoxSize, setFreightBoxSize] = useState<FreightBoxSize>('box')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<CatalogItem | null>(null)
 
@@ -104,7 +107,21 @@ export function CatalogSection() {
                     *Not including freight
                   </span>
                 </th>
-                <th>Avg Freight / Stem</th>
+                <th>
+                  <div className="freight-header">
+                    <span>Avg Freight / Stem</span>
+                    <select
+                      className="freight-size-select"
+                      value={freightBoxSize}
+                      onChange={(e) => setFreightBoxSize(e.target.value as FreightBoxSize)}
+                    >
+                      <option value="box">Box</option>
+                      <option value="hb">Half Box</option>
+                      <option value="qb">Qtr Box</option>
+                      <option value="eb">8th Box</option>
+                    </select>
+                  </div>
+                </th>
                 <th>Provider Notes</th>
                 <th>Poppy Notes</th>
                 <th style={{ width: 60 }}></th>
@@ -114,6 +131,7 @@ export function CatalogSection() {
               catalog={filteredCatalog}
               suppliers={suppliers}
               filterSupplierId={filterSupplierId}
+              freightBoxSize={freightBoxSize}
               onEdit={openEdit}
             />
           </table>
@@ -125,3 +143,4 @@ export function CatalogSection() {
     </div>
   )
 }
+

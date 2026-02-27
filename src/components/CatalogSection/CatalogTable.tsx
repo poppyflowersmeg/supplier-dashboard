@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
 import type { CatalogItem, Supplier } from '../../lib/types'
+import type { FreightBoxSize } from './CatalogSection'
 
 const AGROGANA_ID = 2
 
@@ -9,14 +10,24 @@ function formatPrice(price: string) {
   return price
 }
 
+function getFreight(s: Supplier, size: FreightBoxSize): number | null {
+  switch (size) {
+    case 'box': return s.freightPerStemBoxAvg
+    case 'hb':  return s.freightPerStemHBAvg
+    case 'qb':  return s.freightPerStemQBAvg
+    case 'eb':  return s.freightPerStemEBAvg
+  }
+}
+
 interface Props {
   catalog: CatalogItem[]
   suppliers: Supplier[]
   filterSupplierId: string // 'all' or supplier id string
+  freightBoxSize: FreightBoxSize
   onEdit: (id: number) => void
 }
 
-export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: Props) {
+export function CatalogTable({ catalog, suppliers, filterSupplierId, freightBoxSize, onEdit }: Props) {
   const sortedCatalog = [...catalog].sort((a, b) => {
     const pa = suppliers.find((x) => x.id === a.supplierId)?.priority ?? 99
     const pb = suppliers.find((x) => x.id === b.supplierId)?.priority ?? 99
@@ -73,6 +84,8 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
       item.supplierId === AGROGANA_ID &&
       (noteLC.includes('no available') || noteLC.includes('erradicated'))
 
+    const freight = getFreight(s, freightBoxSize)
+
     rows.push(
       <tr key={item.id} className={isUnavailable ? 'row-unavailable' : ''}>
         <td>
@@ -86,7 +99,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
         <td>{item.color || '—'}</td>
         <td style={{ textAlign: 'center' }}>{item.stems || '—'}</td>
         <td className="price-cell">{formatPrice(item.price)}</td>
-        <td className="price-cell">{s.freightPerStemAvg != null ? '$' + s.freightPerStemAvg.toFixed(2) : '—'}</td>
+        <td className="price-cell">{freight != null ? '$' + freight.toFixed(2) : '—'}</td>
         <td className="note-cell">{item.supplierNotes || ''}</td>
         <td className="note-cell">{item.poppyNotes || ''}</td>
         <td>
@@ -109,3 +122,4 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
 
   return <tbody>{rows}</tbody>
 }
+

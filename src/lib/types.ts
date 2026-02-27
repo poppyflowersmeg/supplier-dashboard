@@ -11,7 +11,10 @@ export interface Supplier {
   notes: string
   priority: number
   createdAt: string
-  freightPerStemAvg: number | null
+  freightPerStemBoxAvg: number | null
+  freightPerStemHBAvg: number | null
+  freightPerStemQBAvg: number | null
+  freightPerStemEBAvg: number | null
 }
 
 export interface CatalogItem {
@@ -55,7 +58,10 @@ export function dbToSupplier(r: any): Supplier {
     notes: r.notes || '',
     priority: r.id,
     createdAt: r.createdAt,
-    freightPerStemAvg: r.freightPerStemAvg ?? null,
+    freightPerStemBoxAvg: r.freightPerStemBoxAvg ?? null,
+    freightPerStemHBAvg: r.freightPerStemHBAvg ?? null,
+    freightPerStemQBAvg: r.freightPerStemQBAvg ?? null,
+    freightPerStemEBAvg: r.freightPerStemEBAvg ?? null,
   }
 }
 
@@ -70,7 +76,10 @@ export function supplierToDB(s: Omit<Supplier, 'id' | 'priority' | 'createdAt'>)
     specialties: (s.specialties || '').split(',').map((x) => x.trim()).filter(Boolean),
     limitations: s.limitations || '',
     notes: s.notes || '',
-    freightPerStemAvg: s.freightPerStemAvg ?? null,
+    freightPerStemBoxAvg: s.freightPerStemBoxAvg ?? null,
+    freightPerStemHBAvg: s.freightPerStemHBAvg ?? null,
+    freightPerStemQBAvg: s.freightPerStemQBAvg ?? null,
+    freightPerStemEBAvg: s.freightPerStemEBAvg ?? null,
   }
 }
 

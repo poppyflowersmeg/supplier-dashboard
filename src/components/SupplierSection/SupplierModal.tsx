@@ -21,7 +21,10 @@ interface FormState {
   contactEmail: string
   phone: string
   notes: string
-  freightPerStemAvg: string
+  freightPerStemBoxAvg: string
+  freightPerStemHBAvg: string
+  freightPerStemQBAvg: string
+  freightPerStemEBAvg: string
 }
 
 const defaultForm: FormState = {
@@ -34,7 +37,10 @@ const defaultForm: FormState = {
   contactEmail: '',
   phone: '',
   notes: '',
-  freightPerStemAvg: '',
+  freightPerStemBoxAvg: '',
+  freightPerStemHBAvg: '',
+  freightPerStemQBAvg: '',
+  freightPerStemEBAvg: '',
 }
 
 export function SupplierModal({ supplier, onClose }: Props) {
@@ -56,7 +62,10 @@ export function SupplierModal({ supplier, onClose }: Props) {
         contactEmail: supplier.contactEmail,
         phone: supplier.phone,
         notes: supplier.notes,
-        freightPerStemAvg: supplier.freightPerStemAvg != null ? String(supplier.freightPerStemAvg) : '',
+        freightPerStemBoxAvg: supplier.freightPerStemBoxAvg != null ? String(supplier.freightPerStemBoxAvg) : '',
+        freightPerStemHBAvg: supplier.freightPerStemHBAvg != null ? String(supplier.freightPerStemHBAvg) : '',
+        freightPerStemQBAvg: supplier.freightPerStemQBAvg != null ? String(supplier.freightPerStemQBAvg) : '',
+        freightPerStemEBAvg: supplier.freightPerStemEBAvg != null ? String(supplier.freightPerStemEBAvg) : '',
       })
     } else {
       setForm(defaultForm)
@@ -71,8 +80,13 @@ export function SupplierModal({ supplier, onClose }: Props) {
       alert('Please enter a supplier name.')
       return
     }
-    const freightVal = form.freightPerStemAvg.trim() ? Number(form.freightPerStemAvg) : null
-    const formData = { ...form, freightPerStemAvg: freightVal }
+    const formData = {
+      ...form,
+      freightPerStemBoxAvg: form.freightPerStemBoxAvg.trim() ? Number(form.freightPerStemBoxAvg) : null,
+      freightPerStemHBAvg: form.freightPerStemHBAvg.trim() ? Number(form.freightPerStemHBAvg) : null,
+      freightPerStemQBAvg: form.freightPerStemQBAvg.trim() ? Number(form.freightPerStemQBAvg) : null,
+      freightPerStemEBAvg: form.freightPerStemEBAvg.trim() ? Number(form.freightPerStemEBAvg) : null,
+    }
     try {
       if (supplier) {
         await updateSupplier.mutateAsync({ ...formData, id: supplier.id, priority: supplier.priority })
@@ -161,16 +175,65 @@ export function SupplierModal({ supplier, onClose }: Props) {
           </div>
           <div className="form-row" style={{ marginTop: 14 }}>
             <label>Avg Freight / Stem ($)</label>
-            <div className="input-prefix-wrap">
-              <span className="input-prefix">$</span>
-              <input
-                type="number"
-                value={form.freightPerStemAvg}
-                onChange={(e) => handleField('freightPerStemAvg', e.target.value)}
-                placeholder="0.00"
-                step="0.01"
-                min="0"
-              />
+            <div className="form-row-2" style={{ marginTop: 4 }}>
+              <div className="form-row" style={{ marginBottom: 0 }}>
+                <label style={{ fontSize: '.68rem' }}>Box</label>
+                <div className="input-prefix-wrap">
+                  <span className="input-prefix">$</span>
+                  <input
+                    type="number"
+                    value={form.freightPerStemBoxAvg}
+                    onChange={(e) => handleField('freightPerStemBoxAvg', e.target.value)}
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div className="form-row" style={{ marginBottom: 0 }}>
+                <label style={{ fontSize: '.68rem' }}>Half Box</label>
+                <div className="input-prefix-wrap">
+                  <span className="input-prefix">$</span>
+                  <input
+                    type="number"
+                    value={form.freightPerStemHBAvg}
+                    onChange={(e) => handleField('freightPerStemHBAvg', e.target.value)}
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="form-row-2" style={{ marginTop: 8 }}>
+              <div className="form-row" style={{ marginBottom: 0 }}>
+                <label style={{ fontSize: '.68rem' }}>Qtr Box</label>
+                <div className="input-prefix-wrap">
+                  <span className="input-prefix">$</span>
+                  <input
+                    type="number"
+                    value={form.freightPerStemQBAvg}
+                    onChange={(e) => handleField('freightPerStemQBAvg', e.target.value)}
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <div className="form-row" style={{ marginBottom: 0 }}>
+                <label style={{ fontSize: '.68rem' }}>8th Box</label>
+                <div className="input-prefix-wrap">
+                  <span className="input-prefix">$</span>
+                  <input
+                    type="number"
+                    value={form.freightPerStemEBAvg}
+                    onChange={(e) => handleField('freightPerStemEBAvg', e.target.value)}
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div className="form-row" style={{ marginTop: 14 }}>
