@@ -1,10 +1,10 @@
 export interface Supplier {
   id: number
   name: string
-  type: 'Farm' | 'Wholesaler'
+  supplierType: 'Farm' | 'Wholesaler'
   boxMin: string
   leadTime: string
-  email: string
+  contactEmail: string
   phone: string
   specialties: string // comma-separated string
   limitations: string
@@ -27,10 +27,10 @@ export function dbToSupplier(r: any): Supplier {
   return {
     id: r.id,
     name: r.name,
-    type: r.partner_type,
-    boxMin: r.min || '',
-    leadTime: r.lead_time || '',
-    email: r.contact_email || '',
+    supplierType: r.supplierType,
+    boxMin: r.boxMin || '',
+    leadTime: r.leadTime || '',
+    contactEmail: r.contactEmail || '',
     phone: r.phone || '',
     specialties: (r.specialties || []).join(', '),
     limitations: r.limitations || '',
@@ -42,10 +42,10 @@ export function dbToSupplier(r: any): Supplier {
 export function supplierToDB(s: Omit<Supplier, 'id' | 'priority'>) {
   return {
     name: s.name,
-    partner_type: s.type,
-    min: s.boxMin || null,
-    lead_time: s.leadTime || '',
-    contact_email: s.email || '',
+    supplierType: s.supplierType,
+    boxMin: s.boxMin || null,
+    leadTime: s.leadTime || '',
+    contactEmail: s.contactEmail || '',
     phone: s.phone || '',
     specialties: (s.specialties || '').split(',').map((x) => x.trim()).filter(Boolean),
     limitations: s.limitations || '',
@@ -57,7 +57,7 @@ export function supplierToDB(s: Omit<Supplier, 'id' | 'priority'>) {
 export function dbToCatalogItem(r: any): CatalogItem {
   return {
     id: r.id,
-    supplierId: r.supplier_id,
+    supplierId: r.supplierId,
     variety: r.variety,
     color: r.color || '',
     stems: r.stems || '',
@@ -68,7 +68,7 @@ export function dbToCatalogItem(r: any): CatalogItem {
 
 export function catalogItemToDB(item: Omit<CatalogItem, 'id'>) {
   return {
-    supplier_id: item.supplierId,
+    supplierId: item.supplierId,
     variety: item.variety,
     color: item.color || '',
     stems: String(item.stems || ''),

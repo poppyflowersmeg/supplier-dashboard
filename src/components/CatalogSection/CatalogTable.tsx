@@ -60,7 +60,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
           <td colSpan={7} className="group-label">
             {s.name}{' '}
             <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
-              — {s.type}
+              — {s.supplierType}
             </span>
           </td>
         </tr>
@@ -77,7 +77,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
       <tr key={item.id} className={isUnavailable ? 'row-unavailable' : ''}>
         <td>
           {filterSupplierId !== 'all' && (
-            <span className={`supplier-tag${s.type === 'Wholesaler' ? ' wholesaler' : ''}`}>
+            <span className={`supplier-tag${s.supplierType === 'Wholesaler' ? ' wholesaler' : ''}`}>
               {s.name}
             </span>
           )}

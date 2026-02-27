@@ -12,24 +12,24 @@ type SupplierType = 'Farm' | 'Wholesaler'
 
 interface FormState {
   name: string
-  type: SupplierType
+  supplierType: SupplierType
   boxMin: string
   leadTime: string
   specialties: string
   limitations: string
-  email: string
+  contactEmail: string
   phone: string
   notes: string
 }
 
 const defaultForm: FormState = {
   name: '',
-  type: 'Farm',
+  supplierType: 'Farm',
   boxMin: '',
   leadTime: '',
   specialties: '',
   limitations: '',
-  email: '',
+  contactEmail: '',
   phone: '',
   notes: '',
 }
@@ -45,12 +45,12 @@ export function SupplierModal({ supplier, onClose }: Props) {
     if (supplier) {
       setForm({
         name: supplier.name,
-        type: supplier.type,
+        supplierType: supplier.supplierType,
         boxMin: supplier.boxMin,
         leadTime: supplier.leadTime,
         specialties: supplier.specialties,
         limitations: supplier.limitations,
-        email: supplier.email,
+        contactEmail: supplier.contactEmail,
         phone: supplier.phone,
         notes: supplier.notes,
       })
@@ -120,14 +120,14 @@ export function SupplierModal({ supplier, onClose }: Props) {
             <label>Type *</label>
             <div className="type-radio-group">
               <div
-                className={`type-radio${form.type === 'Farm' ? ' selected-farm' : ''}`}
-                onClick={() => handleField('type', 'Farm')}
+                className={`type-radio${form.supplierType === 'Farm' ? ' selected-farm' : ''}`}
+                onClick={() => handleField('supplierType', 'Farm')}
               >
                 🌿 Farm / Grower
               </div>
               <div
-                className={`type-radio${form.type === 'Wholesaler' ? ' selected-wholesaler' : ''}`}
-                onClick={() => handleField('type', 'Wholesaler')}
+                className={`type-radio${form.supplierType === 'Wholesaler' ? ' selected-wholesaler' : ''}`}
+                onClick={() => handleField('supplierType', 'Wholesaler')}
               >
                 🏪 Wholesaler
               </div>
@@ -176,8 +176,8 @@ export function SupplierModal({ supplier, onClose }: Props) {
               <label>Contact Email</label>
               <input
                 type="email"
-                value={form.email}
-                onChange={(e) => handleField('email', e.target.value)}
+                value={form.contactEmail}
+                onChange={(e) => handleField('contactEmail', e.target.value)}
                 placeholder="orders@supplier.com"
               />
             </div>

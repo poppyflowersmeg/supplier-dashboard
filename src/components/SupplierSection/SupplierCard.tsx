@@ -17,8 +17,8 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
         <div className="card-top-text">
           <div className="card-name" title={s.name}>{s.name}</div>
           <div className="card-badges">
-            <span className={`badge badge-${s.type === 'Wholesaler' ? 'wholesaler' : 'farm'}`}>
-              {s.type}
+            <span className={`badge badge-${s.supplierType === 'Wholesaler' ? 'wholesaler' : 'farm'}`}>
+              {s.supplierType}
             </span>
           </div>
         </div>
@@ -48,10 +48,10 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
           <span>{s.limitations}</span>
         </div>
       )}
-      {s.email && (
+      {s.contactEmail && (
         <div className="card-info-row" style={{ fontSize: '.78rem' }}>
           <span className="info-icon">✉️</span>
-          <a href={`mailto:${s.email}`}>{s.email}</a>
+          <a href={`mailto:${s.contactEmail}`}>{s.contactEmail}</a>
         </div>
       )}
       {s.phone && (
