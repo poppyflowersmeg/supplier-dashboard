@@ -37,10 +37,16 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
           <span>{s.leadTime}</span>
         </div>
       )}
-      {s.freightPerStemBoxAvg != null && (
-        <div className="card-info-row" style={{ fontSize: '.79rem' }}>
+      {(s.freightPerStemBoxAvg != null || s.freightPerStemHBAvg != null || s.freightPerStemQBAvg != null || s.freightPerStemEBAvg != null) && (
+        <div className="card-info-row" style={{ fontSize: '.79rem', alignItems: 'flex-start' }}>
           <span className="info-icon">🚚</span>
-          <span><strong>Avg Freight:</strong> ${s.freightPerStemBoxAvg.toFixed(2)}/stem (Box)</span>
+          <span>
+            <strong>Avg Freight/stem:</strong>
+            {s.freightPerStemBoxAvg != null && <> ${s.freightPerStemBoxAvg.toFixed(2)} Box</>}
+            {s.freightPerStemHBAvg != null && <>{s.freightPerStemBoxAvg != null ? ' · ' : ' '}${s.freightPerStemHBAvg.toFixed(2)} HB</>}
+            {s.freightPerStemQBAvg != null && <>{(s.freightPerStemBoxAvg != null || s.freightPerStemHBAvg != null) ? ' · ' : ' '}${s.freightPerStemQBAvg.toFixed(2)} QB</>}
+            {s.freightPerStemEBAvg != null && <>{(s.freightPerStemBoxAvg != null || s.freightPerStemHBAvg != null || s.freightPerStemQBAvg != null) ? ' · ' : ' '}${s.freightPerStemEBAvg.toFixed(2)} EB</>}
+          </span>
         </div>
       )}
       {specialtyChips.length > 0 && (

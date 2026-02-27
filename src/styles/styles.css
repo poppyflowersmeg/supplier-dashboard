@@ -1249,10 +1249,10 @@
       font-size: .68rem;
       font-weight: 500;
       padding: 2px 4px;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 255, 255, .4);
       border-radius: 4px;
-      background: var(--surface);
-      color: var(--text);
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
       cursor: pointer;
       width: fit-content;
     }
