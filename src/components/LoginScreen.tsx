@@ -1,9 +1,8 @@
 interface Props {
   onSignIn: () => void
-  accessDenied: boolean
 }
 
-export function LoginScreen({ onSignIn, accessDenied }: Props) {
+export function LoginScreen({ onSignIn }: Props) {
   return (
     <div id="login-screen" className="login-screen">
       <div className="login-card">
@@ -18,11 +17,6 @@ export function LoginScreen({ onSignIn, accessDenied }: Props) {
           </svg>
           Sign in with Google
         </button>
-        {accessDenied && (
-          <p className="login-note" style={{ color: 'var(--poppy)' }}>
-            Access is restricted to meg@poppyflowers.com.
-          </p>
-        )}
         <p className="login-note">Restricted to @poppyflowers.com accounts</p>
       </div>
     </div>

@@ -5,12 +5,12 @@ import { SupplierSection } from './components/SupplierSection/SupplierSection'
 import { CatalogSection } from './components/CatalogSection/CatalogSection'
 
 export function App() {
-  const { session, loading, accessDenied, signIn, signOut } = useAuth()
+  const { session, loading, signIn, signOut } = useAuth()
 
   if (loading) return null
 
   if (!session) {
-    return <LoginScreen onSignIn={signIn} accessDenied={accessDenied} />
+    return <LoginScreen onSignIn={signIn} />
   }
 
   return (
