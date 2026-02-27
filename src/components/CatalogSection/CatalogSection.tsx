@@ -62,6 +62,7 @@ export function CatalogSection() {
           <input
             className="search-input"
             type="text"
+            style={{paddingLeft: 30}}
             placeholder="Search variety, color, notes…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
