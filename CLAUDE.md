@@ -34,6 +34,16 @@ npm run build
 npm run preview
 ```
 
+## Database Migrations
+
+Use the Supabase CLI to create and apply migrations:
+```bash
+supabase migration new <name>   # create new migration file
+supabase db push                # push migrations to remote
+```
+
+Migration files live in `supabase/migrations/`.
+
 ## Deploying
 
 Push to `main` — GitHub Actions runs the build and deploys to GitHub Pages automatically.

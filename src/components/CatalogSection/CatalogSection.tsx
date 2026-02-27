@@ -104,6 +104,7 @@ export function CatalogSection() {
                     *Not including freight
                   </span>
                 </th>
+                <th>Avg Freight / Stem</th>
                 <th>Provider Notes</th>
                 <th>Poppy Notes</th>
                 <th style={{ width: 60 }}></th>

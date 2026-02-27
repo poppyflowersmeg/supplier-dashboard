@@ -33,7 +33,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
     return (
       <tbody>
         <tr>
-          <td colSpan={8}>
+          <td colSpan={9}>
             <div className="empty-state">
               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeLinecap="round">
                 <circle cx="11" cy="11" r="8"/>
@@ -57,7 +57,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
     if (filterSupplierId === 'all' && item.supplierId !== lastSupplierId) {
       rows.push(
         <tr key={`group-${item.supplierId}`}>
-          <td colSpan={8} className="group-label">
+          <td colSpan={9} className="group-label">
             {s.name}{' '}
             <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
               — {s.supplierType}
@@ -86,6 +86,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
         <td>{item.color || '—'}</td>
         <td style={{ textAlign: 'center' }}>{item.stems || '—'}</td>
         <td className="price-cell">{formatPrice(item.price)}</td>
+        <td className="price-cell">{s.freightPerStemAvg != null ? '$' + s.freightPerStemAvg.toFixed(2) : '—'}</td>
         <td className="note-cell">{item.supplierNotes || ''}</td>
         <td className="note-cell">{item.poppyNotes || ''}</td>
         <td>

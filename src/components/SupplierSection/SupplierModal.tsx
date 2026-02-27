@@ -21,6 +21,7 @@ interface FormState {
   contactEmail: string
   phone: string
   notes: string
+  freightPerStemAvg: string
 }
 
 const defaultForm: FormState = {
@@ -33,6 +34,7 @@ const defaultForm: FormState = {
   contactEmail: '',
   phone: '',
   notes: '',
+  freightPerStemAvg: '',
 }
 
 export function SupplierModal({ supplier, onClose }: Props) {
@@ -54,6 +56,7 @@ export function SupplierModal({ supplier, onClose }: Props) {
         contactEmail: supplier.contactEmail,
         phone: supplier.phone,
         notes: supplier.notes,
+        freightPerStemAvg: supplier.freightPerStemAvg != null ? String(supplier.freightPerStemAvg) : '',
       })
     } else {
       setForm(defaultForm)
@@ -68,12 +71,14 @@ export function SupplierModal({ supplier, onClose }: Props) {
       alert('Please enter a supplier name.')
       return
     }
+    const freightVal = form.freightPerStemAvg.trim() ? Number(form.freightPerStemAvg) : null
+    const formData = { ...form, freightPerStemAvg: freightVal }
     try {
       if (supplier) {
-        await updateSupplier.mutateAsync({ ...form, id: supplier.id, priority: supplier.priority })
+        await updateSupplier.mutateAsync({ ...formData, id: supplier.id, priority: supplier.priority })
         showToast('Supplier updated ✓')
       } else {
-        await createSupplier.mutateAsync(form)
+        await createSupplier.mutateAsync(formData)
         showToast('Supplier added ✓')
       }
       onClose()
@@ -151,6 +156,20 @@ export function SupplierModal({ supplier, onClose }: Props) {
                 value={form.leadTime}
                 onChange={(e) => handleField('leadTime', e.target.value)}
                 placeholder="e.g. Order by Mon"
+              />
+            </div>
+          </div>
+          <div className="form-row" style={{ marginTop: 14 }}>
+            <label>Avg Freight / Stem ($)</label>
+            <div className="input-prefix-wrap">
+              <span className="input-prefix">$</span>
+              <input
+                type="number"
+                value={form.freightPerStemAvg}
+                onChange={(e) => handleField('freightPerStemAvg', e.target.value)}
+                placeholder="0.00"
+                step="0.01"
+                min="0"
               />
             </div>
           </div>

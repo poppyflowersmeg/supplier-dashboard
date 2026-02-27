@@ -11,6 +11,7 @@ export interface Supplier {
   notes: string
   priority: number
   createdAt: string
+  freightPerStemAvg: number | null
 }
 
 export interface CatalogItem {
@@ -47,6 +48,7 @@ export function dbToSupplier(r: any): Supplier {
     notes: r.notes || '',
     priority: r.id,
     createdAt: r.createdAt,
+    freightPerStemAvg: r.freightPerStemAvg ?? null,
   }
 }
 
@@ -61,6 +63,7 @@ export function supplierToDB(s: Omit<Supplier, 'id' | 'priority' | 'createdAt'>)
     specialties: (s.specialties || '').split(',').map((x) => x.trim()).filter(Boolean),
     limitations: s.limitations || '',
     notes: s.notes || '',
+    freightPerStemAvg: s.freightPerStemAvg ?? null,
   }
 }
 
