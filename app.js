@@ -98,10 +98,12 @@ async function handleAuthChange(event, session) {
 
 document.getElementById('btn-google-login').addEventListener('click', async () => {
   const redirectTo = window.location.origin + window.location.pathname;
-  const { error } = await db.auth.signInWithOAuth({
+  console.log('[auth] signInWithOAuth, redirectTo:', redirectTo);
+  const { data, error } = await db.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo },
   });
+  console.log('[auth] signInWithOAuth result:', { data, error });
   if (error) showToast('Sign-in failed: ' + error.message);
 });
 
