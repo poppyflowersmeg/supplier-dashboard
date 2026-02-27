@@ -71,7 +71,7 @@ export function SupplierCard({ supplier: s, onEdit }: Props) {
       {s.notes && <div className="card-note">{s.notes}</div>}
       {catalogEntries.length > 0 && (
         <div className="card-catalog">
-          <div className="card-catalog-title">Catalog</div>
+          <div className="card-catalog-title">Catalog & Ordering Guides</div>
           {catalogEntries.map((entry) => (
             <div key={entry.id} className="card-catalog-entry">
               <span>{entry.type === 'pdf' ? '📄' : '🔗'}</span>

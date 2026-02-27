@@ -87,7 +87,7 @@ export function SupplierCatalogSection({ supplierId }: Props) {
 
   return (
     <div className="catalog-section">
-      <div className="catalog-section-title">Catalog</div>
+      <div className="catalog-section-title">Catalog & Ordering Guides</div>
 
       {isLoading && <div className="catalog-empty">Loading…</div>}
 
