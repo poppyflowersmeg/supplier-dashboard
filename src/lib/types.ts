@@ -10,6 +10,7 @@ export interface Supplier {
   limitations: string
   notes: string
   priority: number
+  createdAt: string
 }
 
 export interface CatalogItem {
@@ -36,6 +37,7 @@ export function dbToSupplier(r: any): Supplier {
     limitations: r.limitations || '',
     notes: r.notes || '',
     priority: r.id,
+    createdAt: r.createdAt,
   }
 }
 
