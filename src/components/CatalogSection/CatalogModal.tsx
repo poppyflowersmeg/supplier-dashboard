@@ -15,7 +15,6 @@ interface FormState {
   color: string
   stems: string
   price: string
-  supplierNotes: string
   poppyNotes: string
 }
 
@@ -34,7 +33,6 @@ export function CatalogModal({ item, suppliers, onClose }: Props) {
     color: item?.color ?? '',
     stems: item?.stems ?? '',
     price: item?.price ?? '',
-    supplierNotes: item?.supplierNotes ?? '',
     poppyNotes: item?.poppyNotes ?? '',
   })
 
@@ -45,7 +43,6 @@ export function CatalogModal({ item, suppliers, onClose }: Props) {
       color: item?.color ?? '',
       stems: item?.stems ?? '',
       price: item?.price ?? '',
-      supplierNotes: item?.supplierNotes ?? '',
       poppyNotes: item?.poppyNotes ?? '',
     })
   }, [item, defaultSupplierId])
@@ -60,10 +57,10 @@ export function CatalogModal({ item, suppliers, onClose }: Props) {
     }
     try {
       if (item) {
-        await updateItem.mutateAsync({ ...form, id: item.id })
+        await updateItem.mutateAsync({ ...form, id: item.id, supplierNotes: item.supplierNotes })
         showToast('Item updated ✓')
       } else {
-        await createItem.mutateAsync(form)
+        await createItem.mutateAsync({ ...form, supplierNotes: '' })
         showToast('Item added ✓')
       }
       onClose()
@@ -149,22 +146,19 @@ export function CatalogModal({ item, suppliers, onClose }: Props) {
               />
             </div>
           </div>
+          {item?.supplierNotes && (
+            <div className="form-row" style={{ marginTop: 14 }}>
+              <label>Supplier Notes</label>
+              <p style={{ margin: 0, fontSize: '.875rem', color: 'var(--text-muted, #666)' }}>{item.supplierNotes}</p>
+            </div>
+          )}
           <div className="form-row" style={{ marginTop: 14 }}>
-            <label>Supplier Notes</label>
-            <textarea
-              value={form.supplierNotes}
-              onChange={(e) => handleField('supplierNotes', e.target.value)}
-              placeholder="Grade, seasonal notes, special conditions…"
-              style={{ minHeight: 55 }}
-            />
-          </div>
-          <div className="form-row">
             <label>Poppy Notes</label>
-            <textarea
+            <input
+              type="text"
               value={form.poppyNotes}
               onChange={(e) => handleField('poppyNotes', e.target.value)}
               placeholder="Internal notes for the team…"
-              style={{ minHeight: 55 }}
             />
           </div>
           {item && (

@@ -77,7 +77,6 @@ export function catalogItemToDB(item: Omit<CatalogItem, 'id'>) {
     color: item.color || '',
     stems: String(item.stems || ''),
     price: String(item.price || ''),
-    supplierNotes: item.supplierNotes || '',
     poppyNotes: item.poppyNotes || '',
   }
 }
