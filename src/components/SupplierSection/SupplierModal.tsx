@@ -1,0 +1,224 @@
+import { useState, useEffect } from 'react'
+import { useCreateSupplier, useUpdateSupplier, useDeleteSupplier } from '../../hooks/useSuppliers'
+import { useToast } from '../Toast'
+import type { Supplier } from '../../lib/types'
+
+interface Props {
+  supplier: Supplier | null // null = add mode
+  onClose: () => void
+}
+
+type SupplierType = 'Farm' | 'Wholesaler'
+
+interface FormState {
+  name: string
+  type: SupplierType
+  boxMin: string
+  leadTime: string
+  specialties: string
+  limitations: string
+  email: string
+  phone: string
+  notes: string
+}
+
+const defaultForm: FormState = {
+  name: '',
+  type: 'Farm',
+  boxMin: '',
+  leadTime: '',
+  specialties: '',
+  limitations: '',
+  email: '',
+  phone: '',
+  notes: '',
+}
+
+export function SupplierModal({ supplier, onClose }: Props) {
+  const [form, setForm] = useState<FormState>(defaultForm)
+  const { showToast } = useToast()
+  const createSupplier = useCreateSupplier()
+  const updateSupplier = useUpdateSupplier()
+  const deleteSupplier = useDeleteSupplier()
+
+  useEffect(() => {
+    if (supplier) {
+      setForm({
+        name: supplier.name,
+        type: supplier.type,
+        boxMin: supplier.boxMin,
+        leadTime: supplier.leadTime,
+        specialties: supplier.specialties,
+        limitations: supplier.limitations,
+        email: supplier.email,
+        phone: supplier.phone,
+        notes: supplier.notes,
+      })
+    } else {
+      setForm(defaultForm)
+    }
+  }, [supplier])
+
+  const handleField = (field: keyof FormState, value: string) =>
+    setForm((f) => ({ ...f, [field]: value }))
+
+  const handleSave = async () => {
+    if (!form.name.trim()) {
+      alert('Please enter a supplier name.')
+      return
+    }
+    try {
+      if (supplier) {
+        await updateSupplier.mutateAsync({ ...form, id: supplier.id, priority: supplier.priority })
+        showToast('Supplier updated ✓')
+      } else {
+        await createSupplier.mutateAsync(form)
+        showToast('Supplier added ✓')
+      }
+      onClose()
+    } catch {
+      showToast('Error saving supplier')
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!supplier) return
+    if (!confirm('Delete this supplier and all their catalog items? This cannot be undone.')) return
+    try {
+      await deleteSupplier.mutateAsync(supplier.id)
+      showToast('Supplier deleted')
+      onClose()
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : 'Error deleting supplier')
+    }
+  }
+
+  const isBusy = createSupplier.isPending || updateSupplier.isPending || deleteSupplier.isPending
+
+  return (
+    <div
+      className="modal-backdrop"
+      id="modal-supplier"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className="modal">
+        <div className="modal-header">
+          <span className="modal-title">{supplier ? 'Edit Supplier' : 'Add Supplier'}</span>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <div className="modal-body">
+          <div className="form-row">
+            <label>Supplier Name *</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => handleField('name', e.target.value)}
+              placeholder="e.g. Agrogana"
+            />
+          </div>
+          <div className="form-row" style={{ marginTop: 14 }}>
+            <label>Type *</label>
+            <div className="type-radio-group">
+              <div
+                className={`type-radio${form.type === 'Farm' ? ' selected-farm' : ''}`}
+                onClick={() => handleField('type', 'Farm')}
+              >
+                🌿 Farm / Grower
+              </div>
+              <div
+                className={`type-radio${form.type === 'Wholesaler' ? ' selected-wholesaler' : ''}`}
+                onClick={() => handleField('type', 'Wholesaler')}
+              >
+                🏪 Wholesaler
+              </div>
+            </div>
+          </div>
+          <div className="form-row-2" style={{ marginTop: 14 }}>
+            <div className="form-row" style={{ marginBottom: 0 }}>
+              <label>Box / Order Minimum</label>
+              <input
+                type="text"
+                value={form.boxMin}
+                onChange={(e) => handleField('boxMin', e.target.value)}
+                placeholder="e.g. 5 stems per variety"
+              />
+            </div>
+            <div className="form-row" style={{ marginBottom: 0 }}>
+              <label>Lead Time</label>
+              <input
+                type="text"
+                value={form.leadTime}
+                onChange={(e) => handleField('leadTime', e.target.value)}
+                placeholder="e.g. Order by Mon"
+              />
+            </div>
+          </div>
+          <div className="form-row" style={{ marginTop: 14 }}>
+            <label>Specialties (what they carry well)</label>
+            <input
+              type="text"
+              value={form.specialties}
+              onChange={(e) => handleField('specialties', e.target.value)}
+              placeholder="e.g. Roses, Ranunculus, Dainty stems"
+            />
+          </div>
+          <div className="form-row">
+            <label>Limitations (what they don't carry / watch-outs)</label>
+            <input
+              type="text"
+              value={form.limitations}
+              onChange={(e) => handleField('limitations', e.target.value)}
+              placeholder="e.g. No hydrangea, carnations, or mums"
+            />
+          </div>
+          <div className="form-row-2">
+            <div className="form-row" style={{ marginBottom: 0 }}>
+              <label>Contact Email</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => handleField('email', e.target.value)}
+                placeholder="orders@supplier.com"
+              />
+            </div>
+            <div className="form-row" style={{ marginBottom: 0 }}>
+              <label>Phone</label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => handleField('phone', e.target.value)}
+                placeholder="(800) 555-0100"
+              />
+            </div>
+          </div>
+          <div className="form-row">
+            <label>Notes</label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => handleField('notes', e.target.value)}
+              placeholder="Anything the team should know…"
+            />
+          </div>
+          {supplier && (
+            <div className="delete-zone">
+              <p>Permanently remove this supplier and all their catalog items.</p>
+              <button
+                className="btn-danger"
+                onClick={handleDelete}
+                disabled={isBusy}
+              >
+                Delete Supplier
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={isBusy}>
+            Save Supplier
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -1,2 +1,5 @@
 .server.pid
 .server.log
+node_modules
+dist
+.env.local

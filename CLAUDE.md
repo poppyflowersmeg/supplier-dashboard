@@ -1,38 +1,52 @@
 # Supplier Dashboard — Claude Context
 
 ## Stack
-Plain HTML, CSS, and JavaScript. No build step, no framework, no dependencies.
+React 18 + TypeScript, built with Vite, TanStack Query v5 for data fetching, Supabase for auth + database.
 
-| File | Purpose |
+| Path | Purpose |
 |------|---------|
-| `index.html` | Page structure and markup |
-| `styles.css` | All styles |
-| `app.js` | All JavaScript / app logic |
-| `data.json` | Supplier and catalog data |
+| `src/main.tsx` | Entry point, QueryClientProvider + ToastProvider |
+| `src/App.tsx` | Auth gate — shows LoginScreen or main app |
+| `src/lib/supabase.ts` | Supabase client (from env vars) |
+| `src/lib/types.ts` | Supplier/CatalogItem interfaces + db mapping functions |
+| `src/hooks/useAuth.ts` | Google OAuth auth state |
+| `src/hooks/useSuppliers.ts` | React Query hooks for partners table |
+| `src/hooks/useCatalog.ts` | React Query hooks for catalog table |
+| `src/components/` | UI components (NavBar, SupplierSection, CatalogSection, etc.) |
+| `src/styles/styles.css` | All styles |
+| `.env.local` | VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (gitignored) |
 
 ## Local Development
 
-The app uses `fetch('data.json')` so it must be served from a local server — opening `index.html` directly as a file won't work.
-
 **Start the dev server:**
 ```bash
-./start.sh
+npm run dev
 ```
-Opens http://localhost:8000 in your browser automatically. If the server is already running, it will restart it.
+Opens http://localhost:5173/supplier-dashboard/ (Vite with HMR).
 
-**Stop the dev server:**
+**Build:**
 ```bash
-./stop.sh
+npm run build
+```
+
+**Preview built output:**
+```bash
+npm run preview
 ```
 
 ## Deploying
 
-`gh` CLI is installed. Push changes to `main` and GitHub Pages rebuilds automatically — no manual deploy step needed.
+Push to `main` — GitHub Actions runs the build and deploys to GitHub Pages automatically.
 
-```bash
-git add -A
-git commit -m "your message"
-git push
-```
+Before the first deploy, add these GitHub Actions secrets in repo Settings → Secrets:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+Also enable GitHub Pages with source "GitHub Actions" in repo Settings → Pages.
 
 Live URL: https://poppyflowersmeg.github.io/supplier-dashboard/
+
+# currentDate
+Today's date is 2026-02-27.
+
+      IMPORTANT: this context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task.
