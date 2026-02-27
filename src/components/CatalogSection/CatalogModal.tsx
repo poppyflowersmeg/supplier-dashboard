@@ -149,7 +149,7 @@ export function CatalogModal({ item, suppliers, onClose }: Props) {
           {item?.supplierNotes && (
             <div className="form-row" style={{ marginTop: 14 }}>
               <label>Supplier Notes</label>
-              <p style={{ margin: 0, fontSize: '.875rem', color: 'var(--text-muted, #666)' }}>{item.supplierNotes}</p>
+              <p style={{ margin: 0, fontSize: '.875rem', color: 'var(--text-muted, #666)', whiteSpace: 'pre-wrap' }}>{item.supplierNotes}</p>
             </div>
           )}
           <div className="form-row" style={{ marginTop: 14 }}>
