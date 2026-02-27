@@ -20,7 +20,8 @@ export interface CatalogItem {
   color: string
   stems: string
   price: string
-  notes: string
+  supplierNotes: string
+  poppyNotes: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,7 +65,8 @@ export function dbToCatalogItem(r: any): CatalogItem {
     color: r.color || '',
     stems: r.stems || '',
     price: r.price || '',
-    notes: r.notes || '',
+    supplierNotes: r.supplierNotes || '',
+    poppyNotes: r.poppyNotes || '',
   }
 }
 
@@ -75,6 +77,7 @@ export function catalogItemToDB(item: Omit<CatalogItem, 'id'>) {
     color: item.color || '',
     stems: String(item.stems || ''),
     price: String(item.price || ''),
-    notes: item.notes || '',
+    supplierNotes: item.supplierNotes || '',
+    poppyNotes: item.poppyNotes || '',
   }
 }

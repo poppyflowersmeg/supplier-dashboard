@@ -69,15 +69,15 @@ export function NavBar({ userEmail, onSignOut }: Props) {
 
         const currentCatalog = queryClient.getQueryData<CatalogItem[]>(['catalog']) || []
         let updated = 0
-        const toUpdate: Array<{ id: number; notes: string }> = []
+        const toUpdate: Array<{ id: number; supplierNotes: string }> = []
 
         currentCatalog.forEach((item) => {
           if (item.supplierId !== AGROGANA_ID) return
           const key = normVariety(item.variety)
           if (key in lookup) {
             const incoming = lookup[key]
-            if (item.notes !== incoming) {
-              toUpdate.push({ id: item.id, notes: incoming })
+            if (item.supplierNotes !== incoming) {
+              toUpdate.push({ id: item.id, supplierNotes: incoming })
               updated++
             }
           }
@@ -86,7 +86,7 @@ export function NavBar({ userEmail, onSignOut }: Props) {
         if (toUpdate.length) {
           await Promise.all(
             toUpdate.map((item) =>
-              db.from('catalog_items').update({ notes: item.notes }).eq('id', item.id)
+              db.from('catalogItems').update({ supplierNotes: item.supplierNotes }).eq('id', item.id)
             )
           )
           queryClient.invalidateQueries({ queryKey: ['catalog'] })

@@ -12,7 +12,7 @@ export function useCatalog() {
       let page = 0
       while (true) {
         const from = page * pageSize
-        const { data, error } = await db.from('catalog_items').select('*').order('id').range(from, from + pageSize - 1)
+        const { data, error } = await db.from('catalogItems').select('*').order('id').range(from, from + pageSize - 1)
         if (error) throw error
         allRows = allRows.concat(data)
         if (data.length < pageSize) break
@@ -27,7 +27,7 @@ export function useCreateCatalogItem() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (item: Omit<CatalogItem, 'id'>) => {
-      const { data, error } = await db.from('catalog_items').insert(catalogItemToDB(item)).select().single()
+      const { data, error } = await db.from('catalogItems').insert(catalogItemToDB(item)).select().single()
       if (error) throw error
       return dbToCatalogItem(data)
     },
@@ -41,7 +41,7 @@ export function useUpdateCatalogItem() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ id, ...item }: CatalogItem) => {
-      const { error } = await db.from('catalog_items').update(catalogItemToDB(item)).eq('id', id)
+      const { error } = await db.from('catalogItems').update(catalogItemToDB(item)).eq('id', id)
       if (error) throw error
     },
     onSuccess: () => {
@@ -54,7 +54,7 @@ export function useDeleteCatalogItem() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (id: number) => {
-      const { error } = await db.from('catalog_items').delete().eq('id', id)
+      const { error } = await db.from('catalogItems').delete().eq('id', id)
       if (error) throw error
     },
     onSuccess: () => {

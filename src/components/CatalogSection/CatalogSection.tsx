@@ -22,7 +22,8 @@ export function CatalogSection() {
     return (
       item.variety.toLowerCase().includes(searchLower) ||
       item.color.toLowerCase().includes(searchLower) ||
-      (item.notes || '').toLowerCase().includes(searchLower) ||
+      (item.supplierNotes || '').toLowerCase().includes(searchLower) ||
+      (item.poppyNotes || '').toLowerCase().includes(searchLower) ||
       (s?.name ?? '').toLowerCase().includes(searchLower)
     )
   })

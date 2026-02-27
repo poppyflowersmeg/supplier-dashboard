@@ -68,7 +68,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
       lastSupplierId = item.supplierId
     }
 
-    const noteLC = (item.notes || '').toLowerCase()
+    const noteLC = (item.supplierNotes || '').toLowerCase()
     const isUnavailable =
       item.supplierId === AGROGANA_ID &&
       (noteLC.includes('no available') || noteLC.includes('erradicated'))
@@ -86,7 +86,7 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, onEdit }: P
         <td>{item.color || '—'}</td>
         <td style={{ textAlign: 'center' }}>{item.stems || '—'}</td>
         <td className="price-cell">{formatPrice(item.price)}</td>
-        <td className="note-cell">{item.notes || ''}</td>
+        <td className="note-cell">{item.supplierNotes || ''}</td>
         <td>
           <div className="actions-cell">
             <button
