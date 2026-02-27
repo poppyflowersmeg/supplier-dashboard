@@ -86,7 +86,7 @@ export function NavBar({ userEmail, onSignOut }: Props) {
         if (toUpdate.length) {
           await Promise.all(
             toUpdate.map((item) =>
-              db.from('catalog').update({ notes: item.notes }).eq('id', item.id)
+              db.from('catalog_items').update({ notes: item.notes }).eq('id', item.id)
             )
           )
           queryClient.invalidateQueries({ queryKey: ['catalog'] })
