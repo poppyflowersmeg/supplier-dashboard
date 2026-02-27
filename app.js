@@ -1,3 +1,40 @@
+// ── Supabase ───────────────────────────────────────────────────
+const SUPABASE_URL = 'https://rfcpsppeaocwcnmejbrd.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_w-6fGm9m0XyMNDOjciomMg_X-WdkhJA';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Row → app object
+function dbToSupplier(r) {
+  return {
+    id:          r.id,
+    name:        r.name,
+    type:        r.partner_type,
+    boxMin:      r.min || '',
+    leadTime:    r.lead_time || '',
+    email:       r.contact_email || '',
+    phone:       r.phone || '',
+    specialties: (r.specialties || []).join(', '),
+    limitations: r.limitations || '',
+    notes:       r.notes || '',
+    weeklyAvailable: true, priority: r.id,
+  };
+}
+
+// App object → DB row
+function supplierToDB(s) {
+  return {
+    name:          s.name,
+    partner_type:  s.type,
+    min:           s.boxMin || null,
+    lead_time:     s.leadTime || '',
+    contact_email: s.email || '',
+    phone:         s.phone || '',
+    specialties:   (s.specialties || '').split(',').map(x => x.trim()).filter(Boolean),
+    limitations:   s.limitations || '',
+    notes:         s.notes || '',
+  };
+}
+
 // ── State ──────────────────────────────────────────────────────
 let rawData, state;
 
@@ -10,6 +47,76 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
+
+// ── Auth ───────────────────────────────────────────────────────
+function showLoginScreen(note) {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('nav-user').classList.add('hidden');
+  if (note) showToast(note);
+}
+
+function hideLoginScreen() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('nav-user').classList.remove('hidden');
+}
+
+function setAuthButtons(enabled) {
+  const on = enabled ? '' : 'not-allowed';
+  const els = ['btn-add-supplier'];
+  els.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.disabled = !enabled;
+    el.style.cursor = enabled ? '' : on;
+  });
+}
+
+async function handleAuthChange(event, session) {
+  const user = session?.user;
+
+  if (!user) {
+    showLoginScreen();
+    setAuthButtons(false);
+    return;
+  }
+
+  // Enforce @poppyflowers.com domain
+  if (!user.email?.toLowerCase().endsWith('@poppyflowers.com')) {
+    await db.auth.signOut();
+    showLoginScreen('Access is restricted to @poppyflowers.com accounts.');
+    return;
+  }
+
+  // Authenticated ✓
+  hideLoginScreen();
+  setAuthButtons(true);
+  document.getElementById('nav-user-email').textContent = user.email;
+
+  // Only load data once
+  if (!state) await initApp();
+}
+
+document.getElementById('btn-google-login').addEventListener('click', async () => {
+  const redirectTo = window.location.origin + window.location.pathname;
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo },
+  });
+  if (error) showToast('Sign-in failed: ' + error.message);
+});
+
+document.getElementById('btn-signout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  // onAuthStateChange will fire and show the login screen
+});
+
+// Listen for auth state changes (covers OAuth redirects, sign-out, etc.)
+db.auth.onAuthStateChange(handleAuthChange);
+
+// Check session on initial load
+db.auth.getSession().then(({ data: { session } }) => {
+  handleAuthChange(null, session);
+});
 
 // ── Ordering Flow Banner ───────────────────────────────────────
 // ── Supplier Cards ─────────────────────────────────────────────
@@ -44,19 +151,19 @@ function renderCards() {
       ${s.phone ? `<div class="card-info-row" style="font-size:.78rem"><span class="info-icon">📞</span><span>${esc(s.phone)}</span></div>` : ''}
       ${s.notes ? `<div class="card-note">${esc(s.notes)}</div>` : ''}
       <div class="card-actions">
-        <button class="btn btn-ghost btn-sm" data-edit-supplier="${s.id}" style="flex:1" disabled>✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" data-edit-supplier="${s.id}" style="flex:1">✏️ Edit</button>
       </div>
     `;
 
     scroll.insertBefore(card, addBtn);
   });
 
-  // scroll.querySelectorAll('[data-edit-supplier]').forEach(btn => {
-  //   btn.addEventListener('click', e => {
-  //     e.stopPropagation();
-  //     openSupplierModal(parseInt(btn.dataset.editSupplier));
-  //   });
-  // });
+  scroll.querySelectorAll('[data-edit-supplier]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openSupplierModal(parseInt(btn.dataset.editSupplier));
+    });
+  });
 }
 
 // ── Catalog ────────────────────────────────────────────────────
@@ -165,37 +272,41 @@ function openSupplierModal(id) {
   showModal('modal-supplier');
 }
 
-document.getElementById('btn-save-supplier').addEventListener('click', () => {
+document.getElementById('btn-save-supplier').addEventListener('click', async () => {
   const name = document.getElementById('s-name').value.trim();
   if (!name) { alert('Please enter a supplier name.'); return; }
   const id = document.getElementById('s-id').value;
   const data = {
     name,
-    type: document.getElementById('s-type').value,
-    boxMin: document.getElementById('s-boxmin').value.trim(),
-    leadTime: document.getElementById('s-leadtime').value.trim(),
+    type:        document.getElementById('s-type').value,
+    boxMin:      document.getElementById('s-boxmin').value.trim(),
+    leadTime:    document.getElementById('s-leadtime').value.trim(),
     specialties: document.getElementById('s-specialties').value.trim(),
     limitations: document.getElementById('s-limitations').value.trim(),
-    email: document.getElementById('s-email').value.trim(),
-    phone: document.getElementById('s-phone').value.trim(),
-    notes: document.getElementById('s-notes').value.trim(),
+    email:       document.getElementById('s-email').value.trim(),
+    phone:       document.getElementById('s-phone').value.trim(),
+    notes:       document.getElementById('s-notes').value.trim(),
   };
   if (id) {
-    const s = state.suppliers.find(x => x.id == id);
-    Object.assign(s, data);
+    const { error } = await db.from('partners').update(supplierToDB(data)).eq('id', id);
+    if (error) { showToast('Error saving supplier'); console.error(error); return; }
+    Object.assign(state.suppliers.find(x => x.id == id), data);
     showToast('Supplier updated ✓');
   } else {
-    const newId = state.nextSupplierId++;
-    state.suppliers.push({ id: newId, ...data });
+    const { data: row, error } = await db.from('partners').insert(supplierToDB(data)).select().single();
+    if (error) { showToast('Error adding supplier'); console.error(error); return; }
+    state.suppliers.push(dbToSupplier(row));
     showToast('Supplier added ✓');
   }
   closeModal('modal-supplier');
   renderAll();
 });
 
-document.getElementById('btn-delete-supplier').addEventListener('click', () => {
+document.getElementById('btn-delete-supplier').addEventListener('click', async () => {
   const id = parseInt(document.getElementById('s-id').value);
   if (!confirm('Delete this supplier and all their catalog items? This cannot be undone.')) return;
+  const { error, count } = await db.from('partners').delete({ count: 'exact' }).eq('id', id);
+  if (error || count === 0) { showToast("You don't have permission to delete partners"); return; }
   state.suppliers = state.suppliers.filter(s => s.id !== id);
   state.catalog   = state.catalog.filter(i => i.supplierId !== id);
   closeModal('modal-supplier');
@@ -381,10 +492,16 @@ function renderAll() {
   renderCatalog();
 }
 
-fetch('data.json')
-  .then(r => r.json())
-  .then(data => {
-    rawData = data;
-    state = JSON.parse(JSON.stringify(rawData));
-    renderAll();
-  });
+async function initApp() {
+  const [{ data: partners, error }, catalogRes] = await Promise.all([
+    db.from('partners').select('*').order('id'),
+    fetch('data.json').then(r => r.json()),
+  ]);
+  if (error) { showToast('Failed to load partners'); console.error(error); return; }
+  state = {
+    suppliers: partners.map(dbToSupplier),
+    catalog:   catalogRes.catalog,
+    nextId:    catalogRes.nextId,
+  };
+  renderAll();
+}
