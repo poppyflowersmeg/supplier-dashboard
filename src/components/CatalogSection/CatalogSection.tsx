@@ -29,6 +29,9 @@ export function CatalogSection() {
       (item.poppyNotes || '').toLowerCase().includes(searchLower) ||
       (s?.name ?? '').toLowerCase().includes(searchLower)
     )
+  }).filter((item) => {
+    if (filterSupplierId === 'all') return true
+    return item.supplierId === Number(filterSupplierId)
   })
 
   const openAdd = () => {
@@ -55,6 +58,9 @@ export function CatalogSection() {
     <div id="main-section">
       <div className="section-header" style={{ cursor: 'default', marginBottom: 14 }}>
         <span className="section-title">Flower Catalog</span>
+        <span style={{ marginLeft: 'auto', fontSize: '.78rem', fontWeight: 500, color: 'rgba(255,255,255,.7)' }}>
+          {filteredCatalog.length} result{filteredCatalog.length !== 1 ? 's' : ''}
+        </span>
       </div>
       <div className="catalog-toolbar">
         <div className="search-wrap">
