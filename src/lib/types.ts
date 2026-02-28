@@ -44,6 +44,8 @@ export interface UserProfile {
   email: string
   isAdmin: boolean
   canManageUsers: boolean
+  lastSessionAt: string | null
+  numSessions: number
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

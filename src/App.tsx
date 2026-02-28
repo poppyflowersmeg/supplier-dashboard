@@ -1,5 +1,6 @@
 import { useAuth } from './hooks/useAuth'
 import { useCurrentUserProfile } from './hooks/useUserProfiles'
+import { useSessionTracker } from './hooks/useSessionTracker'
 import { LoginScreen } from './components/LoginScreen'
 import { NavBar } from './components/NavBar'
 import { SupplierSection } from './components/SupplierSection/SupplierSection'
@@ -8,6 +9,7 @@ import { CatalogSection } from './components/CatalogSection/CatalogSection'
 export function App() {
   const { session, loading, signIn, signOut } = useAuth()
   const { data: profile } = useCurrentUserProfile(session?.user.id)
+  useSessionTracker(session?.user.id)
 
   if (loading) return null
 

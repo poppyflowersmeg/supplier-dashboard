@@ -1168,10 +1168,19 @@
       justify-content: space-between;
       padding: 10px 0;
       border-bottom: 1px solid var(--border);
+      gap: 10px;
     }
 
     .user-row:last-child {
       border-bottom: none;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
     }
 
     .user-email {
@@ -1182,6 +1191,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .user-session-meta {
+      font-size: .73rem;
+      color: var(--muted);
+      letter-spacing: .02em;
     }
 
     .toggle-label {

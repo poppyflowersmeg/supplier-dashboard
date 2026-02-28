@@ -8,7 +8,7 @@ export function useUserProfiles() {
     queryFn: async () => {
       const { data, error } = await db
         .from('userProfiles')
-        .select('id, email, isAdmin, canManageUsers')
+        .select('id, email, isAdmin, canManageUsers, lastSessionAt, numSessions')
         .order('email')
       if (error) throw error
       return data as UserProfile[]
@@ -23,7 +23,7 @@ export function useCurrentUserProfile(userId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await db
         .from('userProfiles')
-        .select('id, email, isAdmin, canManageUsers')
+        .select('id, email, isAdmin, canManageUsers, lastSessionAt, numSessions')
         .eq('id', userId!)
         .single()
       if (error) throw error
