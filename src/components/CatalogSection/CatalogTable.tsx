@@ -101,7 +101,26 @@ export function CatalogTable({ catalog, suppliers, filterSupplierId, freightBoxS
         <td style={{ fontWeight: 600 }}>{item.variety}</td>
         <td>{item.color || '—'}</td>
         <td style={{ textAlign: 'center' }}>{item.stems || '—'}</td>
-        <td className="price-cell">{formatPrice(item.price)}</td>
+        <td className="price-cell">
+          {(() => {
+            const p = parseFloat(item.price.replace(/[^0-9.]/g, ''))
+            if (!isNaN(p) && freight != null) {
+              return '$' + (p + freight).toFixed(2)
+            }
+            return formatPrice(item.price)
+          })()}
+          {(() => {
+            const p = parseFloat(item.price.replace(/[^0-9.]/g, ''))
+            if (!isNaN(p) && freight != null) {
+              return (
+                <span style={{ color: 'var(--muted)', fontSize: '0.85em', marginLeft: '6px' }}>
+                  ({formatPrice(item.price)})
+                </span>
+              )
+            }
+            return null
+          })()}
+        </td>
         <td className="price-cell">{freight != null ? '$' + freight.toFixed(2) : '—'}</td>
         <td className="note-cell">{item.supplierNotes || ''}</td>
         <td className="note-cell">{item.poppyNotes || ''}</td>

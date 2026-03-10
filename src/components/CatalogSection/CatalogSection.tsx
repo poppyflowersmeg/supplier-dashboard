@@ -110,7 +110,7 @@ export function CatalogSection() {
                 <th>
                   Price / Stem<br/>
                   <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: '.68rem', opacity: 0.7 }}>
-                    *Not including freight
+                    *Including freight
                   </span>
                 </th>
                 <th>
